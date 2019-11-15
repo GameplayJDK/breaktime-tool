@@ -1,5 +1,7 @@
 # breaktime-tool
 
+Simple configurable tool to display time until and past school hours.
+
 ## Installation
 
 To set up the tool:
