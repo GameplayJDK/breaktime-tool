@@ -18,98 +18,96 @@
 
 package my.project.breaktime;
 
-import java.awt.Color;
-import java.awt.Font;
+import javax.swing.*;
+import java.awt.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import javax.swing.JLabel;
-
 public class TimeLabel extends JLabel {
-	private static final long serialVersionUID = -1377568046017931666L;
+    private static final long serialVersionUID = -1377568046017931666L;
 
-	private static final String FONT_NAME = "monospaced";
-	private static final int FONT_SIZE = 16;
+    private static final String FONT_NAME = "monospaced";
+    private static final int FONT_SIZE = 16;
 
-	private String formatText;
-	
-	private LocalDateTime fromTime;
-	private LocalDateTime toTime;
+    private String formatText;
 
-	public TimeLabel(String text) {
-		this(text, null, null);
-	}
+    private LocalDateTime fromTime;
+    private LocalDateTime toTime;
 
-	public TimeLabel(String formatText, LocalDateTime fromTime, LocalDateTime toTime) {
-		this.formatText = formatText;
-		
-		this.fromTime = fromTime;
-		this.toTime = toTime;
+    public TimeLabel(String text) {
+        this(text, null, null);
+    }
 
-		this.initialize();
-	}
+    public TimeLabel(String formatText, LocalDateTime fromTime, LocalDateTime toTime) {
+        this.formatText = formatText;
 
-	private void initialize() {
-		if (this.isLabel()) {
-			this.setText(this.formatText);
-		}
+        this.fromTime = fromTime;
+        this.toTime = toTime;
 
-		this.setForeground(Color.WHITE);
+        this.initialize();
+    }
 
-		this.setFont(this.createFont());
-	}
+    private void initialize() {
+        if (this.isLabel()) {
+            this.setText(this.formatText);
+        }
 
-	private Font createFont() {
-		return new Font(TimeLabel.FONT_NAME, Font.PLAIN, TimeLabel.FONT_SIZE);
-	}
+        this.setForeground(Color.WHITE);
 
-	public void setTime(LocalDateTime now) {
-		if (this.isLabel()) {
-			return;
-		}
+        this.setFont(this.createFont());
+    }
 
-		Duration fromDuration = Duration.between(now, this.fromTime);
-		Duration toDuration = Duration.between(now, this.toTime);
+    private Font createFont() {
+        return new Font(TimeLabel.FONT_NAME, Font.PLAIN, TimeLabel.FONT_SIZE);
+    }
 
-		this.setForeground(this.findColor(now));
+    public void setTime(LocalDateTime now) {
+        if (this.isLabel()) {
+            return;
+        }
 
-		this.setText(String.format(this.formatText, new Object[] {
-				this.formatDuration(fromDuration),
-				this.formatDuration(toDuration),
-		}));
-	}
+        Duration fromDuration = Duration.between(now, this.fromTime);
+        Duration toDuration = Duration.between(now, this.toTime);
 
-	private boolean isLabel() {
-		return (this.fromTime == null && this.toTime == null);
-	}
+        this.setForeground(this.findColor(now));
 
-	private Color findColor(LocalDateTime now) {
-		if (now.isAfter(this.fromTime) && now.isBefore(this.toTime)) {
-			return Color.CYAN;
-		}
-		
-		if (now.isBefore(this.fromTime)) {
-			return Color.RED;
-		}
-		
-		if (now.isAfter(this.toTime)) {
-			return Color.GREEN;
-		}
-		
-		return Color.WHITE;
-	}
+        this.setText(String.format(this.formatText, new Object[]{
+                this.formatDuration(fromDuration),
+                this.formatDuration(toDuration),
+        }));
+    }
 
-	// Suggestion: Return 00:00:00 for expired (negative) durations.
-	private String formatDuration(Duration duration) {
-		long seconds = duration.getSeconds();
-		long secondsAbsolute = Math.abs(seconds);
-		
-		String positive = String.format("%02d:%02d:%02d", new Object[] {
-				((secondsAbsolute / (60 * 60))	% 60),
-				((secondsAbsolute / (60		)) 	% 60),
-				((secondsAbsolute			 ) 	% 60),
-		});
+    private boolean isLabel() {
+        return (this.fromTime == null && this.toTime == null);
+    }
 
-		return ((seconds < 0L) ? "-" : "+") + positive;
-	}
+    private Color findColor(LocalDateTime now) {
+        if (now.isAfter(this.fromTime) && now.isBefore(this.toTime)) {
+            return Color.CYAN;
+        }
+
+        if (now.isBefore(this.fromTime)) {
+            return Color.RED;
+        }
+
+        if (now.isAfter(this.toTime)) {
+            return Color.GREEN;
+        }
+
+        return Color.WHITE;
+    }
+
+    // Suggestion: Return 00:00:00 for expired (negative) durations.
+    private String formatDuration(Duration duration) {
+        long seconds = duration.getSeconds();
+        long secondsAbsolute = Math.abs(seconds);
+
+        String positive = String.format("%02d:%02d:%02d", new Object[]{
+                ((secondsAbsolute / (60 * 60)) % 60),
+                ((secondsAbsolute / (60)) % 60),
+                ((secondsAbsolute) % 60),
+        });
+
+        return ((seconds < 0L) ? "-" : "+") + positive;
+    }
 }

@@ -18,56 +18,51 @@
 
 package my.project.breaktime;
 
-import java.awt.Frame;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.lang.reflect.Field;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.GraphicsDevice.WindowTranslucency;
-
-import javax.swing.JFrame;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import java.lang.reflect.Field;
 
 public class Main {
-	
-	public static void main(String[] args) {
-		Main.setDecoratedTransparencyAllowed();
-		Main.setSystemLookAndFeel();
-		
-		BreaktimeTool t = new BreaktimeTool();
-		t.setVisible(true);
-		
-		if (Main.getOpacitySupport()) {
-			Main.setUndecoratedViaReflection(t);
-		}
-	}
 
-	private static void setUndecoratedViaReflection(Frame frame) {
-		try {
-			Field undecoratedField = Frame.class.getDeclaredField("undecorated");
-	        undecoratedField.setAccessible(true);
-			undecoratedField.set(frame, true);
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-			ex.printStackTrace();
-		}
-	}
+    public static void main(String[] args) {
+        Main.setDecoratedTransparencyAllowed();
+        Main.setSystemLookAndFeel();
 
-	private static void setDecoratedTransparencyAllowed() {
-		JFrame.setDefaultLookAndFeelDecorated(true);
-	}
+        BreaktimeTool t = new BreaktimeTool();
+        t.setVisible(true);
 
-	private static void setSystemLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
-			ex.printStackTrace();
-		}
-	}
+        if (Main.getOpacitySupport()) {
+            Main.setUndecoratedViaReflection(t);
+        }
+    }
 
-	private static boolean getOpacitySupport() {
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    private static void setUndecoratedViaReflection(Frame frame) {
+        try {
+            Field undecoratedField = Frame.class.getDeclaredField("undecorated");
+            undecoratedField.setAccessible(true);
+            undecoratedField.set(frame, true);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static void setDecoratedTransparencyAllowed() {
+        JFrame.setDefaultLookAndFeelDecorated(true);
+    }
+
+    private static void setSystemLookAndFeel() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static boolean getOpacitySupport() {
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice gd = ge.getDefaultScreenDevice();
-        
-		return gd.isWindowTranslucencySupported(WindowTranslucency.TRANSLUCENT);
-	}
+
+        return gd.isWindowTranslucencySupported(WindowTranslucency.TRANSLUCENT);
+    }
 }
